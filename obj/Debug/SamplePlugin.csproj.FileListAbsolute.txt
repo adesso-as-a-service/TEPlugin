@@ -1,0 +1,7 @@
+C:\Users\schoenbornl\Documents\Build\SamplePlugin\Debug\SamplePlugin.dll
+C:\Users\schoenbornl\Documents\Build\SamplePlugin\Debug\SamplePlugin.pdb
+C:\Users\schoenbornl\Documents\workspace\SamplePlugin\obj\Debug\SamplePlugin.csprojAssemblyReference.cache
+C:\Users\schoenbornl\Documents\workspace\SamplePlugin\obj\Debug\SamplePlugin.csproj.CoreCompileInputs.cache
+C:\Users\schoenbornl\Documents\workspace\SamplePlugin\obj\Debug\SamplePlugin.csproj.CopyComplete
+C:\Users\schoenbornl\Documents\workspace\SamplePlugin\obj\Debug\SamplePlugin.dll
+C:\Users\schoenbornl\Documents\workspace\SamplePlugin\obj\Debug\SamplePlugin.pdb

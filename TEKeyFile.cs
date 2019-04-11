@@ -7,10 +7,10 @@ using shamirsSecretSharing;
 using System.IO;
 using SCCrypto;
 using System.Security.Cryptography;
+using System.Windows.Forms;
 
 namespace TEPlugin
 {
-    [Serializable]
     public class TEKeyFile
     {
         private static RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
@@ -42,8 +42,11 @@ namespace TEPlugin
             {
                 using (Stream stream = File.Open(filename, FileMode.Open))
                 {
-                    var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                    keyFile =  (TEKeyFile) binaryFormatter.Deserialize(stream);
+                    if (stream.Length > int.MaxValue) throw new FileLoadException("File to big");
+                    int len = (int)stream.Length;
+                    byte[] fileBin = new byte[len];
+                    len = stream.Read(fileBin, 0, len);
+                    keyFile =  TEKeyFile.FromBinary(getSubarry(fileBin,0,len));
                 }
             }
             catch (FileNotFoundException)
@@ -71,7 +74,7 @@ namespace TEPlugin
 
             for (int i = 0; i < keyFile.encryptedShares.Count; i++)
             {
-                temp = (EncryptedData)ByteArrayToObject(keyFile.encryptedShares[i].Item3);
+                temp = EncryptedData.FromBinary(keyFile.encryptedShares[i].Item3);
                 encData.Add(temp.encryptedKey, temp);
                 dataToDecrypt.Add(new Tuple<string, byte[], byte[]>(keyFile.encryptedShares[i].Item1, keyFile.encryptedShares[i].Item2, temp.encryptedKey));
             }
@@ -89,7 +92,7 @@ namespace TEPlugin
                     remainingOld = remaining;
                     encKey = retVal.Item2;
                     key = retVal.Item3;
-                    shares[dec] = (Share)ByteArrayToObject(encData[encKey].Decrypt(key));
+                    shares[dec] = Share.FromBinary(encData[encKey].Decrypt(key));
                     dec++;
                 }
                 io.outputText(String.Format("Remaining: {0}", keyFile.key.N - dec));
@@ -142,47 +145,188 @@ namespace TEPlugin
                     plain = retVal.Item2;
                     cipher = retVal.Item3;
                     pubkeyhash = retVal.Item4;
-                    encData = new EncryptedData(ObjectToByteArray(tuple.Item2[remaining]), plain, cipher);
-                    storeVal = new Tuple<string, byte[], byte[]>(retVal.Item5, pubkeyhash, ObjectToByteArray(encData));
+                    encData = new EncryptedData(tuple.Item2[remaining].ToBinary(), plain, cipher);
+                    storeVal = new Tuple<string, byte[], byte[]>(retVal.Item5, pubkeyhash,encData.ToBinary());
                     store.encryptedShares.Add(storeVal);
                     io.outputText(String.Format("Remaining: {0}", remaining));
                 }
-            
-                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                binaryFormatter.Serialize(stream, store);
+
+                byte[] binForm = store.ToBinary();
+                stream.Write(binForm, 0, binForm.Length);
             }
             io.close();
             return secret;
         }
 
-        private static byte[] ObjectToByteArray(Object obj)
+
+        public byte [] ToBinary()
         {
-            BinaryFormatter bf = new BinaryFormatter();
-            using (var ms = new MemoryStream())
-            {
-                bf.Serialize(ms, obj);
-                return ms.ToArray();
-            }
+            List<byte> retVal = new List<byte> { };
+            byte[] help, len;
+
+            // add pubkey
+            retVal.Add(0x01);
+            help = key.ToBinary();
+            len = BitConverter.GetBytes(help.Length);
+            retVal.AddRange(len);
+            retVal.AddRange(help);
+
+            // add encrypted Shares
+
+            retVal.Add(0x02);
+            help = encryptedSharesToBinary();
+            len = BitConverter.GetBytes(help.Length);
+            retVal.AddRange(len);
+            retVal.AddRange(help);
+
+            return retVal.ToArray();
         }
 
-        // Convert a byte array to an Object
-        private static Object ByteArrayToObject(byte[] arrBytes)
+        private byte[] encryptedSharesToBinary()
         {
-            using (var memStream = new MemoryStream())
+            List<byte> retVal = new List<byte> { };
+            byte[] help, len;
+            Tuple<string, byte[], byte[]> element;
+
+            for (int i = 0; i < encryptedShares.Count; i++)
             {
-                var binForm = new BinaryFormatter();
-                memStream.Write(arrBytes, 0, arrBytes.Length);
-                memStream.Seek(0, SeekOrigin.Begin);
-                var obj = binForm.Deserialize(memStream);
-                return obj;
+                element = encryptedShares[i];
+
+                //add string
+                retVal.Add(0x01);
+
+                help = Encoding.UTF8.GetBytes(element.Item1);
+                len = BitConverter.GetBytes(help.Length);
+
+                retVal.AddRange(len);
+                retVal.AddRange(help);
+
+                // add byte1
+                retVal.Add(0x02);
+
+                help = new byte[element.Item2.Length];
+                Array.Copy(element.Item2, help, help.Length);
+                len = BitConverter.GetBytes(help.Length);
+
+                retVal.AddRange(len);
+                retVal.AddRange(help);
+
+                // add byte2
+                retVal.Add(0x03);
+
+                help = new byte[element.Item3.Length];
+                Array.Copy(element.Item3, help, help.Length);
+                len = BitConverter.GetBytes(help.Length);
+
+                retVal.AddRange(len);
+                retVal.AddRange(help);
             }
+
+            return retVal.ToArray();
         }
+
+
+        public static TEKeyFile FromBinary(byte[] array)
+        {
+            TEKeyFile kf;
+            PublicKey pub = new PublicKey(2, 2, 1024);
+            List<Tuple<string, byte[], byte[]>> encryptedShares = new List<Tuple<string, byte[], byte[]>> { };
+            byte[] help;
+            int len;
+            for (int i = 0; i < array.Length; i++)
+            {
+                switch (array[i])
+                {
+                    case 0x01:
+                        len = BitConverter.ToInt32(array, i + 1);
+                        i = i + 4;
+                        help = getSubarry(array, i + 1, i + 1 + len);
+                        pub = PublicKey.ReadFromBinary(help);
+                        i = i + len;
+                        break;
+                    case 0x02:
+                        len = BitConverter.ToInt32(array, i + 1);
+                        i = i + 4;
+                        help = getSubarry(array, i + 1, i + 1 + len);
+                        encryptedShares = esFromBinary(help);
+                        i = i + len;
+                        break;
+                    default:
+                        throw new FormatException("TEKeyFile Binary Format is incorrect");
+                }
+            }
+
+            kf = new TEKeyFile(pub);
+            kf.encryptedShares = encryptedShares;
+            return kf;
+        }
+
 
         private static byte[] getRandomBytes(uint len)
         {
             byte[] retVal = new byte[len];
             rng.GetBytes(retVal);
             return retVal;
+        }
+
+        public static byte[] getSubarry(byte[] array, int start, int stop)
+        {
+            if (stop > array.Length) throw new ArgumentException("Stop is out of bounds");
+            if (start < 0) throw new ArgumentException("Start is out of bounds");
+            if (start >= stop) throw new ArgumentException("Start can't be bigger or as big as stop");
+
+            byte[] retVal = new byte[stop - start];
+            Array.Copy(array, start, retVal, 0, stop - start);
+            return retVal;
+        }
+
+        private static List<Tuple<string, byte[], byte[]>> esFromBinary(byte[] array)
+        {
+            List<Tuple<string, byte[], byte[]>> encryptedShares = new List<Tuple<string, byte[], byte[]>> { };
+            
+            int len;
+            byte[] help, byte1, byte2;
+            string str;
+            for (int i = 0; i < array.Length; i++)
+            {
+                if ( array[i] != 0x01)
+                throw new FormatException("Encrypted Share Binary Format is incorrect" + i.ToString() +" " + array[i].ToString());
+
+
+                len = BitConverter.ToInt32(array, i + 1);
+                i = i + 4;
+
+                help = getSubarry(array, i + 1, i + 1 + len);
+                i = i + len;
+
+                str = Encoding.UTF8.GetString(help);
+                i++;
+
+                if (array[i] != 0x02)
+                    throw new FormatException("Encrypted Share Binary Format is incorrect2");
+
+
+                len = BitConverter.ToInt32(array, i + 1);
+                i = i + 4;
+
+                byte1 = getSubarry(array, i + 1, i + 1 + len);
+                i = i + len;
+                i++;
+
+                if (array[i] != 0x03)
+                    throw new FormatException("Encrypted Share Binary Format is incorrect3");
+
+
+                len = BitConverter.ToInt32(array, i + 1);
+                i = i + 4;
+
+                byte2 = getSubarry(array, i + 1, i + 1 + len);
+                i = i + len;
+
+                encryptedShares.Add(new Tuple<string, byte[], byte[]> (str, byte1, byte2 ));
+            }
+
+            return encryptedShares;
         }
     }
 

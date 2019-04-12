@@ -1,0 +1,12 @@
+[submodule "include/SCCrypto"]
+	path = include/SCCrypto
+	url = https://github.com/smarthouse/SCCrypto
+[submodule "include/shamirsSecretSharing"]
+	path = include/shamirsSecretSharing
+	url = https://github.com/smarthouse/shamirsSecretSharing
+[submodule "include/bc-csharp"]
+	path = include/bc-csharp
+	url = https://github.com/bcgit/bc-csharp
+[submodule "include/Pkcs11Interop"]
+	path = include/Pkcs11Interop
+	url = https://github.com/Pkcs11Interop/Pkcs11Interop

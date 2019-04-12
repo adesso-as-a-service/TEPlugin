@@ -10,3 +10,4 @@
 [submodule "include/Pkcs11Interop"]
 	path = include/Pkcs11Interop
 	url = https://github.com/Pkcs11Interop/Pkcs11Interop
+	branch = 4.x-maintenance

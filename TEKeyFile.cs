@@ -59,7 +59,6 @@ namespace TEPlugin
             int dec = 0;
             int remaining;
 
-            Share share;
             Tuple<int, byte[], byte[]> retVal;
 
             Share[] shares = new Share[keyFile.key.N];

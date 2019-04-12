@@ -13,7 +13,6 @@ namespace TEPlugin.Forms
 {
     public partial class TEBasicForm : Form
     {
-        volatile bool SelectionDone = false;
 
         public TEBasicForm()
         {

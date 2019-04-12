@@ -43,27 +43,11 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BouncyCastle">
-      <HintPath>..\bc-csharp\crypto\bin\Debug\lib\net20\BouncyCastle.dll</HintPath>
-    </Reference>
     <Reference Include="Costura, Version=3.3.3.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
       <HintPath>packages\Costura.Fody.3.3.3\lib\net40\Costura.dll</HintPath>
     </Reference>
     <Reference Include="KeePass">
-      <HintPath>..\Keypass2.41\KeePass.exe</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Pkcs11Interop, Version=4.1.0.0, Culture=neutral, PublicKeyToken=c10e9c2d8c006d2a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Pkcs11Interop-4.1.0\src\Pkcs11Interop.NetStandard\Pkcs11Interop\bin\Debug\netstandard2.0\Pkcs11Interop.dll</HintPath>
-    </Reference>
-    <Reference Include="SCCrypto">
-      <HintPath>..\SCCrypto\SCCrypto\bin\Debug\SCCrypto.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="shamirsSecretSharing">
-      <HintPath>..\shamirsSecretSharing\bin\Debug\shamirsSecretSharing.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\..\Keypass2.41\KeePass.exe</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -119,6 +103,24 @@
     <EmbeddedResource Include="Forms\TESetting.resx">
       <DependentUpon>TESetting.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="include\bc-csharp\crypto\crypto.csproj">
+      <Project>{38872a5f-e87e-4fad-b109-8eb7b2e6a4a0}</Project>
+      <Name>crypto</Name>
+    </ProjectReference>
+    <ProjectReference Include="include\Pkcs11Interop\src\Pkcs11Interop\Pkcs11Interop\Pkcs11Interop.csproj">
+      <Project>{9bc3ee70-6b0b-4b26-8c06-b7ae50be202e}</Project>
+      <Name>Pkcs11Interop</Name>
+    </ProjectReference>
+    <ProjectReference Include="include\SCCrypto\SCCrypto.csproj">
+      <Project>{7d5617f5-6afe-4915-93ff-0611eee6f281}</Project>
+      <Name>SCCrypto</Name>
+    </ProjectReference>
+    <ProjectReference Include="include\shamirsSecretSharing\shamirsSecretSharing.csproj">
+      <Project>{a64cc554-9c8a-4846-b90b-6c155aae3233}</Project>
+      <Name>shamirsSecretSharing</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

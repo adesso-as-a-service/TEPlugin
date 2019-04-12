@@ -5,6 +5,14 @@ VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TEPlugin", "TEPlugin.csproj", "{4C1BB6F8-D2CD-49C2-9053-21705681356C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "crypto", "include\bc-csharp\crypto\crypto.csproj", "{38872A5F-E87E-4FAD-B109-8EB7B2E6A4A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCCrypto", "include\SCCrypto\SCCrypto.csproj", "{7D5617F5-6AFE-4915-93FF-0611EEE6F281}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "shamirsSecretSharing", "include\shamirsSecretSharing\shamirsSecretSharing.csproj", "{A64CC554-9C8A-4846-B90B-6C155AAE3233}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pkcs11Interop", "include\Pkcs11Interop\src\Pkcs11Interop\Pkcs11Interop\Pkcs11Interop.csproj", "{9BC3EE70-6B0B-4B26-8C06-B7AE50BE202E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +23,22 @@ Global
 		{4C1BB6F8-D2CD-49C2-9053-21705681356C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C1BB6F8-D2CD-49C2-9053-21705681356C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C1BB6F8-D2CD-49C2-9053-21705681356C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38872A5F-E87E-4FAD-B109-8EB7B2E6A4A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38872A5F-E87E-4FAD-B109-8EB7B2E6A4A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38872A5F-E87E-4FAD-B109-8EB7B2E6A4A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38872A5F-E87E-4FAD-B109-8EB7B2E6A4A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D5617F5-6AFE-4915-93FF-0611EEE6F281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D5617F5-6AFE-4915-93FF-0611EEE6F281}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D5617F5-6AFE-4915-93FF-0611EEE6F281}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D5617F5-6AFE-4915-93FF-0611EEE6F281}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A64CC554-9C8A-4846-B90B-6C155AAE3233}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A64CC554-9C8A-4846-B90B-6C155AAE3233}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A64CC554-9C8A-4846-B90B-6C155AAE3233}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A64CC554-9C8A-4846-B90B-6C155AAE3233}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BC3EE70-6B0B-4B26-8C06-B7AE50BE202E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BC3EE70-6B0B-4B26-8C06-B7AE50BE202E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BC3EE70-6B0B-4B26-8C06-B7AE50BE202E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BC3EE70-6B0B-4B26-8C06-B7AE50BE202E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

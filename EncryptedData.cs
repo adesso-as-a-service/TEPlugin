@@ -8,7 +8,6 @@ using System.IO;
 
 namespace TEPlugin
 {
-    [Serializable]
     sealed class EncryptedData
     {
         private byte[] encryptedData;
@@ -18,6 +17,10 @@ namespace TEPlugin
             internal set;
         }
 
+        private EncryptedData()
+        {
+
+        }
 
         public EncryptedData(byte[] Data, byte[] Key, byte[] EncryptedKey)
         {
@@ -77,5 +80,62 @@ namespace TEPlugin
 
 
         }
+
+        public byte[] ToBinary()
+        {
+            List<byte> retVal = new List<byte> { };
+            byte[] help, len;
+
+            // add encryptedData
+            retVal.Add(0x01);
+            help = TEKeyFile.getSubarry(encryptedData, 0, encryptedData.Length);
+            len = BitConverter.GetBytes(help.Length);
+            retVal.AddRange(len);
+            retVal.AddRange(help);
+
+            // add encryptedKey
+
+            retVal.Add(0x02);
+            help = TEKeyFile.getSubarry(encryptedKey, 0, encryptedKey.Length);
+            len = BitConverter.GetBytes(help.Length);
+            retVal.AddRange(len);
+            retVal.AddRange(help);
+
+            return retVal.ToArray();
+        }
+
+        public static EncryptedData FromBinary(byte[] array)
+        {
+            EncryptedData ec;
+            byte[]  ed ,ek;
+            int len;
+            ed = ek = new byte[0];
+            for (int i = 0; i < array.Length; i++)
+            {
+                switch (array[i])
+                {
+                    case 0x01:
+                        len = BitConverter.ToInt32(array, i + 1);
+                        i = i + 4;
+                        ed = TEKeyFile.getSubarry(array, i + 1, i + 1 + len);
+                        i = i + len;
+                        break;
+                    case 0x02:
+                        len = BitConverter.ToInt32(array, i + 1);
+                        i = i + 4;
+                        ek = TEKeyFile.getSubarry(array, i + 1, i + 1 + len);
+                        i = i + len;
+                        break;
+                    default:
+                        throw new FormatException("EncryptedData Binary Format is incorrect");
+                }
+            }
+
+            ec = new EncryptedData();
+            ec.encryptedKey = ek;
+            ec.encryptedData = ed;
+            return ec;
+        }
+
     }
 }

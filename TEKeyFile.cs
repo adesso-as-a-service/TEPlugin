@@ -40,14 +40,8 @@ namespace TEPlugin
                 throw new FileNotFoundException("Keyfile : Filename not set.");
             try
             {
-                using (Stream stream = File.Open(filename, FileMode.Open))
-                {
-                    if (stream.Length > int.MaxValue) throw new FileLoadException("File to big");
-                    int len = (int)stream.Length;
-                    byte[] fileBin = new byte[len];
-                    len = stream.Read(fileBin, 0, len);
-                    keyFile =  TEKeyFile.FromBinary(getSubarry(fileBin,0,len));
-                }
+                byte[] fileBin = File.ReadAllBytes(filename);    
+                keyFile =  TEKeyFile.FromBinary(getSubarry(fileBin,0,fileBin.Length));
             }
             catch (FileNotFoundException)
             {

@@ -60,6 +60,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EncryptedData.cs" />
+    <Compile Include="Forms\EnhancedListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Forms\PW.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -71,6 +74,12 @@
     </Compile>
     <Compile Include="Forms\TEBasicForm.Designer.cs">
       <DependentUpon>TEBasicForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TEListAbort.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TEListAbort.Designer.cs">
+      <DependentUpon>TEListAbort.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\TEListSelect.cs">
       <SubType>Form</SubType>
@@ -96,6 +105,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TEBasicForm.resx">
       <DependentUpon>TEBasicForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TEListAbort.resx">
+      <DependentUpon>TEListAbort.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TEListSelect.resx">
       <DependentUpon>TEListSelect.cs</DependentUpon>

@@ -50,6 +50,10 @@ namespace TEPlugin
             }
             catch (Exception ex)
             {
+                if (ex is OperationCanceledException)
+                {
+                    return null;
+                }
                 MessageBox.Show("Message: " + ex.Message + "\nSource: "+ex.Source + "\nTrace:" + ex.StackTrace);
                 return null;
             }

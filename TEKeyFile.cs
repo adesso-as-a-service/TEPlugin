@@ -33,14 +33,16 @@ namespace TEPlugin
         //----------------------
         public static byte[] OpenKeyfile(string filename, SmartCard smartCard)
         {
+
             TEUserIO io =(TEUserIO) smartCard.settings.userIO;
             io.init();
             TEKeyFile keyFile;
+            
             if (filename.Length == 0)
                 throw new FileNotFoundException("Keyfile : Filename not set.");
             try
             {
-                byte[] fileBin = File.ReadAllBytes(filename);    
+                byte[] fileBin = File.ReadAllBytes(filename);
                 keyFile =  TEKeyFile.FromBinary(getSubarry(fileBin,0,fileBin.Length));
             }
             catch (FileNotFoundException)
@@ -75,6 +77,7 @@ namespace TEPlugin
             // Decrypt with scc
             int remainingOld = keyFile.encryptedShares.Count;
             Decryption decrypt = new Decryption(smartCard, dataToDecrypt);
+
             while (dec < keyFile.key.N)
             {
                 retVal = decrypt.Do();
@@ -102,8 +105,10 @@ namespace TEPlugin
             byte[] secret;
             TEUserIO io = (TEUserIO) smartCard.settings.userIO;
             io.init();
+
             using (Stream stream = File.Open(filename, FileMode.Create))
             {
+                io.outputText("Generating a big prime number!\nThis may take a few seconds...");
                 byte[] plain, cipher, pubkeyhash;
                 EncryptedData encData;
                 bool allowDoubleOwners, allowDoubleKeys;
@@ -114,23 +119,29 @@ namespace TEPlugin
                 m = (uint) settings.Item4;
                 allowDoubleKeys = settings.Item1;
                 allowDoubleOwners = settings.Item2;
+
                 SssEngine engine = new SssEngine(n, m, 2048);
 
                 secret = getRandomBytes(256 / 8);
                 // shamir encrypt
+
                 Tuple<PublicKey, Share[]> tuple = engine.Encrypt(secret);
                 TEKeyFile store = new TEKeyFile(tuple.Item1);
+
                 // encrypt with SCC
                 LinkedList<byte[]> dataToEncrypt = new LinkedList<byte[]>();
+
                 for (int i = 0; i < m; i++)
                 {
                     dataToEncrypt.AddLast(getRandomBytes(256/8));
                 }
+
                 Encryption enc = new Encryption(smartCard, dataToEncrypt,allowDoubleOwners,allowDoubleKeys);
 
                 int remaining = dataToEncrypt.Count;
                 Tuple<int, byte[], byte[], byte[], string> retVal;
                 Tuple<string, byte[], byte[]> storeVal;
+
                 while (remaining > 0)
                 {
                     retVal = enc.Do();
@@ -222,7 +233,7 @@ namespace TEPlugin
         public static TEKeyFile FromBinary(byte[] array)
         {
             TEKeyFile kf;
-            PublicKey pub = new PublicKey(2, 2, 1024);
+            PublicKey pub = null;
             List<Tuple<string, byte[], byte[]>> encryptedShares = new List<Tuple<string, byte[], byte[]>> { };
             byte[] help;
             int len;
@@ -248,7 +259,6 @@ namespace TEPlugin
                         throw new FormatException("TEKeyFile Binary Format is incorrect");
                 }
             }
-
             kf = new TEKeyFile(pub);
             kf.encryptedShares = encryptedShares;
             return kf;

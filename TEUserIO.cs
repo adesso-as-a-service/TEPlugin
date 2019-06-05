@@ -28,7 +28,7 @@ namespace TEPlugin
             TEListSelect listForm = new TEListSelect(list);
             listForm.ShowDialog();
             if (listForm.DialogResult == DialogResult.Cancel) throw new OperationCanceledException("List Selection cancelled");
-            return listForm.ReadSelection();
+            return listForm.SelectedIndex;
         }
 
         public void outputText(string text)
@@ -49,8 +49,9 @@ namespace TEPlugin
 
         public void outputListAbort(List<string> list)
         {
-            string delimiter = Environment.NewLine;
-            MessageBox.Show((list.Aggregate((i, j) => i + delimiter + j)),"Info",MessageBoxButtons.OK);
+            TEListAbort listForm = new TEListAbort(list);
+            listForm.ShowDialog();
+            //if (listForm.DialogResult == DialogResult.Cancel) throw new OperationCanceledException("List Selection cancelled");
         }
 
         public Tuple<bool,bool,int,int> getSettings()

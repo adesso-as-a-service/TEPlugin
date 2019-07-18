@@ -6,7 +6,7 @@
 	url = https://github.com/smarthouse/shamirsSecretSharing
 [submodule "include/bc-csharp"]
 	path = include/bc-csharp
-	url = https://github.com/bcgit/bc-csharp
+	url = https://github.com/smarthouse/bc-csharp
 [submodule "include/Pkcs11Interop"]
 	path = include/Pkcs11Interop
 	url = https://github.com/Pkcs11Interop/Pkcs11Interop
